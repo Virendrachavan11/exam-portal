@@ -34,6 +34,7 @@ const App = () => {
 
 if (process.env.NODE_ENV === 'production') {
   const PRODUCTION_BACKEND_URL = process.env.REACT_APP_PRODUCTION_BACKEND_URL;
+  console.log(PRODUCTION_BACKEND_URL)
 
   const originalFetch = window.fetch;
   window.fetch = async (...args) => {
