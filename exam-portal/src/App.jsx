@@ -33,7 +33,7 @@ const App = () => {
   const LogedUser= useSelector((state) => state.auth, shallowEqual);
 
 if (process.env.NODE_ENV === 'production') {
-  const PRODUCTION_BACKEND_URL = process.env.REACT_APP_PRODUCTION_BACKEND_URL;
+  const PRODUCTION_BACKEND_URL = 'https://exam-portal-backend-hvq6.onrender.com';
   console.log(PRODUCTION_BACKEND_URL)
 
   const originalFetch = window.fetch;
