@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body
+{
+  background-color:  #F5F5F5;
+}
+
+  /* Styling the scroll bar */
+ ::-webkit-scrollbar {
+    width: 8px; /* Set the width of the scrollbar */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: white; /* Background of the scrollbar track */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #f97316; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners on the scrollbar */
+    border: 2px solid #f1f1f1; /* Optional: Add a border around the thumb */
+  }
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Change color on hover */
+  }
+
+  input::file-selector-button {
+    
+    font-size: 10px;
+    padding: 4px;
+    color: white;
+    width: 50%;
+    height: 100%;
+    background-color: orange;
+    border-radius: 8px;
+    border: 1px solid orange;
+  }
+
+.special_input
+{
+  @apply border-[1px] border-orange-500 p-1
+  rounded-xl active:bg-[#F5F5F5;] 
+  hover:bg-orange-50 
+  transform transition-transform duration-100
+}
+
+.form_input
+{
+  @apply border-b-[1px] border-orange-500 p-1
+  hover:bg-orange-50 active:bg-[#F5F5F5;] 
+  hover:bg-orange-50 
+  transform transition-transform duration-100
+}
+
+.form_select_input
+{
+  @apply border-[1px] border-orange-500 rounded-md bg-orange-500
+  text-white font-medium px-3 hover:bg-orange-600 
+}
+
+.submit_btn
+{
+  @apply bg-orange-500 text-white font-medium 
+  rounded-md active:bg-orange-600 
+}
+
+.update_btn
+{
+  @apply bg-blue-500 text-white font-medium 
+  rounded-md active:bg-orange-600 
+}
+
+.search_box
+{
+  @apply p-2 border border-gray-300 rounded shadow-sm
+  focus:outline-none hover:bg-orange-50 
+}
+
+.table_row
+{
+  @apply bg-[#F5F5F5] rounded-md 
+  border border-gray-300 my-1
+  cursor-pointer
+  transform transition-transform 
+  duration-100 hover:scale-[1.005]
+  hover:bg-orange-50 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+} */
