@@ -115,7 +115,7 @@ const Home = () => {
             alt="Phoenix Logo"
             className="rounded-full mb-4 h-20 aspect-square"
           />
-          <p className="text-lg font-semibold">Phoenix Infotech</p>
+          <p className="text-lg font-semibold" onclick=""()=>{navigate("/signup-user")}>Phoenix Infotech</p>
           <p className="text-sm">Phoenix Infotech, Near Bus Stand, Gadhinglaj, India</p>
         </div>
         
