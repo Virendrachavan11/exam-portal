@@ -65,8 +65,8 @@ const Home = () => {
             <p className="text-base max-lg:text-xs">For account creation, reach out to us.</p>
             <div className="flex justify-center items-center gap-2">
               <span className="text-xl font-medium max-lg:text-base"><Phone size={30} className="text-green-600 " /></span>
-              <a href="tel:9890819210" className="text-blue-600 text-4xl font-semibold hover:underline max-lg:text-xl">
-              9890819210
+              <a href="tel:" className="text-blue-600 text-4xl font-semibold hover:underline max-lg:text-xl">
+              +123456789
               </a>
             </div>
         </div>
@@ -115,7 +115,10 @@ const Home = () => {
             alt="Phoenix Logo"
             className="rounded-full mb-4 h-20 aspect-square"
           />
-          <p className="text-lg font-semibold" onclick=""()=>{navigate("/signup-user")}>Phoenix Infotech</p>
+          <p className="text-lg font-semibold" onClick={() => navigate("/signup-user")}>
+  Phoenix Infotech
+</p>
+
           <p className="text-sm">Phoenix Infotech, Near Bus Stand, Gadhinglaj, India</p>
         </div>
         
@@ -162,7 +165,7 @@ const Home = () => {
 
  
           </div>
-          <p className="text-xs mt-2">Created by Virendra Chavan</p>
+          <p className="text-xs mt-2" href="https://www.linkedin.com/in/virendrachavan-in/">Created by Virendra Chavan</p>
           <p className="mt-2 text-xs">&copy; {new Date().getFullYear()} Phoenix Exam Portal. All rights reserved.</p>
         </div>
 
