@@ -9,7 +9,7 @@ import Linkedin from "../../assets/Linkedin.png"
 import Xlogo from "../../assets/X.png"
 import yt from "../../assets/yt.png"
 import bgImage from "../../assets/bg.jpg"
-import Card from "./card";
+
 
 const Home = () => {
 
@@ -98,7 +98,7 @@ const Home = () => {
           <p>Separate views for Students, Supervisors, and Admins.</p>
         </div>
 
-        <Card title={"head1"} para={"para1"}/>
+      
 
       </div>
     </section>
