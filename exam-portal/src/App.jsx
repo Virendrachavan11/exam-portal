@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'production') {
       typeof args[0] === 'string' &&
       args[0].startsWith('http://localhost:5000')
     ) {
-      args[0] = args[0].replace('http://localhost:5000', PRODUCTION_BACKEND_URL);
+      args[0] = args[0].replace('http://localhost:3000', PRODUCTION_BACKEND_URL);
     }
     return originalFetch(...args);
   };
