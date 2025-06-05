@@ -48,12 +48,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
 const allowedOrigins = [
-  'https://exam-portal-eyn2.onrender.com', 
-  'http://localhost:3000' 
+  'https://exam-portal-eyn2.onrender.com',
+  'http://localhost:3000'
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
@@ -111,14 +120,26 @@ app.post('/addQue', async (req, res) => {
 });
 
 
-app.get('/uploads/:filename', (req, res) => {
-  const bucket = new GridFSBucket(mongoose.connection.db, {
-    bucketName: 'uploads',
-  });
 
-  bucket.openDownloadStreamByName(req.params.filename)
-    .on('error', () => res.status(404).send('File not found'))
-    .pipe(res);
+
+app.get('/uploads/:filename', async (req, res) => {
+  try {
+    const bucket = new GridFSBucket(mongoose.connection.db, {
+      bucketName: 'uploads',
+    });
+
+    const fileStream = bucket.openDownloadStreamByName(req.params.filename);
+
+    fileStream.on('error', (err) => {
+      console.error('Error streaming file from GridFS:', err.message);
+      res.status(404).json({ message: 'File not found' });
+    });
+
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 });
 
 
