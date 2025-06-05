@@ -47,13 +47,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json())
 
-const allowedOrigins = [
-  'https://exam-portal-eyn2.onrender.com', 
-  'http://localhost:3000' 
-];
-
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => callback(null, true),
+  credentials: true
 }));
 app.use(express.json());
 
