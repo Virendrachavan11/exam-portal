@@ -165,7 +165,11 @@ const Home = () => {
 
  
           </div>
+<<<<<<< HEAD
           <p className="text-xs mt-2" href="https://www.linkedin.com/in/virendrachavan-in/">Created by Virendra Chavan</p>
+=======
+          <p className="text-xs mt-2 "  onClick={() => navigate("/signup-user")}> </p>
+>>>>>>> 53251cc8 (Fixes added from my computer)
           <p className="mt-2 text-xs">&copy; {new Date().getFullYear()} Phoenix Exam Portal. All rights reserved.</p>
         </div>
 

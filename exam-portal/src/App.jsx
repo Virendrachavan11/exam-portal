@@ -48,8 +48,6 @@ if (process.env.NODE_ENV === 'production') {
   };
 }
 
- 
-
 // Define all routes here
   const router = createBrowserRouter([
     {
