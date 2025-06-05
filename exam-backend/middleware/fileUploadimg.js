@@ -29,24 +29,32 @@
 
 // export default upload;
 
-
-
 import multer from 'multer';
 import { GridFsStorage } from 'multer-gridfs-storage';
+import dotenv from 'dotenv';
 
-// Replace with your actual connection string
-const mongoURI = process.env.MONGODB_URI;
+dotenv.config();
 
 const storage = new GridFsStorage({
-  url: mongoURI,
+  url: process.env.MONGO_URI,
   file: (req, file) => {
+    const match = ['image/png', 'image/jpeg', 'image/jpg', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+    if (match.indexOf(file.mimetype) === -1) {
+      const filename = `${Date.now()}-invalidfile`;
+      return filename;
+    }
+
     return {
-      filename: `${Date.now()}_${file.originalname}`,
-      bucketName: 'uploads', // Ensure this matches your GridFS bucket name
+      bucketName: 'uploads', // collection name in GridFS
+      filename: `${Date.now()}-${file.originalname}`
     };
   },
+  options: { useUnifiedTopology: true }
 });
 
 const upload = multer({ storage });
 
 export default upload;
+
+

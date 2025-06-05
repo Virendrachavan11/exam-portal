@@ -31,48 +31,36 @@ router.get('/:SvUser', async (req, res) => {
   });
 
   
-  router.put('/Update-supervisor/:emailID', upload.single('photo'), async (req, res) => {
-    try {
-      const { emailID } = req.params;
-      const { nameofsv, orgName } = req.body;
-  
-      const existingsv = await supervisordata.findOne({ emailID });
-  
-      if (!existingsv) {
-        return res.status(404).json({ message: 'Supervisor not found' });
-      }
-  
-      let photo = existingsv.photo;
-  
-      if (req.file) {
-        const oldPhotoPath = path.join(__dirname, '..', photo);
-        
-        if (fs.existsSync(oldPhotoPath) && !photo.includes("default")) {
-          fs.unlink(oldPhotoPath, (err) => {
-            if (err) {
-              console.error("Failed to delete old supervisor photo:", err.message);
-            } else {
-              console.log("Old supervisor photo deleted:", photo);
-            }
-          });
-        }
-  
-        photo = req.file.path;
-      }
-  
-      const updatedsv = await supervisordata.findOneAndUpdate(
-        { emailID },
-        { $set: { nameofsv, orgName, photo } },
-        { new: true, runValidators: true }
-      );
-  
-      res.json({ message: 'Supervisor updated successfully', updatedsv });
-    } catch (error) {
-      console.error("Error updating supervisor:", error);
-      res.status(500).json({ message: 'Server error', error: error.message });
+router.put('/Update-supervisor/:emailID', upload.single('photo'), async (req, res) => {
+  try {
+    const { emailID } = req.params;
+    const { nameofsv, orgName } = req.body;
+
+    const existingsv = await supervisordata.findOne({ emailID });
+    if (!existingsv) {
+      return res.status(404).json({ message: 'Supervisor not found' });
     }
-  });
-  
+
+    let photo = existingsv.photo;
+
+    if (req.file) {
+
+      photo = req.file.filename;
+
+    }
+
+    const updatedsv = await supervisordata.findOneAndUpdate(
+      { emailID },
+      { $set: { nameofsv, orgName, photo } },
+      { new: true, runValidators: true }
+    );
+
+    res.json({ message: 'Supervisor updated successfully', updatedsv });
+  } catch (error) {
+    console.error("Error updating supervisor:", error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
 
   
 export default router;
