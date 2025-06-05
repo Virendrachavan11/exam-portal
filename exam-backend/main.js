@@ -47,7 +47,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json())
 
-app.use(cors());
+const allowedOrigins = [
+  'https://exam-portal-eyn2.onrender.com',
+  'http://localhost:3000'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
