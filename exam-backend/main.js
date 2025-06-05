@@ -44,7 +44,7 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static('public'));  
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
+
 app.use(bodyParser.json())
 
 const allowedOrigins = [
@@ -56,6 +56,7 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true, 
 }));
+app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/assets", express.static(path.join(__dirname, "assets")));
