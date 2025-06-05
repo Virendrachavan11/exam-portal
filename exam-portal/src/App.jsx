@@ -49,23 +49,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
-if (process.env.NODE_ENV === 'production') {
-  const PRODUCTION_BACKEND_URL = 'https://exam-portal-backend-hvq6.onrender.com';
-
-  // Intercept image requests and modify src
-  const originalImg = HTMLImageElement.prototype.src;
-  Object.defineProperty(HTMLImageElement.prototype, 'src', {
-    get: function () {
-      return originalImg.call(this);
-    },
-    set: function (value) {
-      if (typeof value === 'string' && value.startsWith('http://localhost:3000')) {
-        value = value.replace('http://localhost:3000', PRODUCTION_BACKEND_URL);
-      }
-      originalImg.call(this, value);
-    },
-  });
-}
 
 
 // Define all routes here
