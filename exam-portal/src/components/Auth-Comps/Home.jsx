@@ -116,7 +116,8 @@ const Home = () => {
             className="rounded-full mb-4 h-20 aspect-square"
           />
           <p className="text-lg font-semibold">Phoenix Infotech</p>
-          <p className="text-sm">Phoenix Infotech, Near Bus Stand, Gadhinglaj, India</p>
+          <p className="text-sm"> Anusaya complex, Near Bardeshkar Petrol Station, Gargoti, India</p>
+          <p className="text-sm">HQ- Phoenix Infotech, Near Bus Stand, Gadhinglaj, India</p>
         </div>
         
         {/* Important Links */}
@@ -162,7 +163,7 @@ const Home = () => {
 
  
           </div>
-          <p className="text-xs mt-2 "  onClick={() => navigate("https://www.linkedin.com/in/virendrachavan-in/")}> Virendra Chavan</p>
+          <p className="text-xs mt-2 "> Created by <a href="https://www.linkedin.com/in/virendrachavan-in/" className="font-semibold text-white">Virendra Chavan</a></p>
           <p className="mt-2 text-xs">&copy; {new Date().getFullYear()} Phoenix Exam Portal. All rights reserved.</p>
         </div>
 
