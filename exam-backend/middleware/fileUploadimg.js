@@ -31,18 +31,22 @@
 
 
 
-const { GridFsStorage } = require('multer-gridfs-storage');
-const multer = require('multer');
+import multer from 'multer';
+import { GridFsStorage } from 'multer-gridfs-storage';
+
+// Replace with your actual connection string
+const mongoURI = process.env.MONGODB_URI;
 
 const storage = new GridFsStorage({
-  url: process.env.MONGODB_URI, // make sure this is correct and accessible from Render
+  url: mongoURI,
   file: (req, file) => {
     return {
       filename: `${Date.now()}_${file.originalname}`,
-      bucketName: 'uploads', // match your bucket name
+      bucketName: 'uploads', // Ensure this matches your GridFS bucket name
     };
-  }
+  },
 });
 
 const upload = multer({ storage });
-module.exports = upload;
+
+export default upload;
