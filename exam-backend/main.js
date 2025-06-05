@@ -6,6 +6,7 @@ import { Que } from "./models/examdb.js";
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { GridFSBucket } from 'mongodb';
 
 
 
@@ -98,6 +99,18 @@ app.post('/addQue', async (req, res) => {
     await que.save();
 
 });
+
+
+app.get('/uploads/:filename', (req, res) => {
+  const bucket = new GridFSBucket(mongoose.connection.db, {
+    bucketName: 'uploads',
+  });
+
+  bucket.openDownloadStreamByName(req.params.filename)
+    .on('error', () => res.status(404).send('File not found'))
+    .pipe(res);
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
