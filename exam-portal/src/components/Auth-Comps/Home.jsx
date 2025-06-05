@@ -162,7 +162,7 @@ const Home = () => {
 
  
           </div>
-          <p className="text-xs mt-2 "  onClick={() => navigate("https://www.linkedin.com/in/virendrachavan-in/")}> </p>
+          <p className="text-xs mt-2 "  onClick={() => navigate("https://www.linkedin.com/in/virendrachavan-in/")}> Virendra Chavan</p>
           <p className="mt-2 text-xs">&copy; {new Date().getFullYear()} Phoenix Exam Portal. All rights reserved.</p>
         </div>
 
