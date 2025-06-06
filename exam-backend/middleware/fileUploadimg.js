@@ -30,33 +30,42 @@
 // export default upload;
 
 import multer from 'multer';
-import { GridFsStorage } from 'multer-gridfs-storage';
-import dotenv from 'dotenv';
+import { GridFSBucket } from 'mongodb';
+import mongoose from 'mongoose';
 
-dotenv.config();
-
-const storage = new GridFsStorage({
-  url: process.env.MONGO_URI,
-  file: (req, file) => {
-    const match = ['image/png', 'image/jpeg', 'image/jpg', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-
-    if (match.indexOf(file.mimetype) === -1) {
-      const filename = `${Date.now()}-invalidfile`;
-      return filename;
-    }
-
-    console.log("FUJS running")
-
-    return {
-      bucketName: 'uploads', // collection name in GridFS
-      filename: `${Date.now()}-${file.originalname}`
-    };
-  },
-  options: { useUnifiedTopology: true }
-});
-
+const storage = multer.memoryStorage(); // Store in memory for manual piping to GridFS
 const upload = multer({ storage });
 
+export async function uploadToGridFS(buffer, filename, contentType) {
+  return new Promise((resolve, reject) => {
+    const db = mongoose.connection.db;
+    const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+
+    const uploadStream = bucket.openUploadStream(filename, {
+      contentType,
+    });
+
+    const fileId = uploadStream.id; // ✅ Capture the ObjectId here
+    console.log("Upload Stream ID (will become file._id):", fileId);
+
+    uploadStream.end(buffer);
+
+    uploadStream.on('finish', () => {
+      console.log('✅ GridFS upload finished');
+      // Manually construct the file object with _id and filename
+      resolve({
+        _id: fileId,
+        filename,
+        contentType,
+      });
+    });
+
+    uploadStream.on('error', (err) => {
+      console.error('GridFS upload error:', err);
+      reject(err);
+    });
+  });
+}
+
+
 export default upload;
-
-

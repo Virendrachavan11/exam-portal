@@ -34,7 +34,6 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-const PRODUCTION_BACKEND_URL = 'https://your-backend-service.onrender.com';
 
 
 
@@ -63,7 +62,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.options('*', cors()); // Still needed!
+app.options('*', cors()); 
 
 app.use(express.json());
 
@@ -123,28 +122,49 @@ app.post('/addQue', async (req, res) => {
 
 
 
-app.get('/uploads/:filename', async (req, res) => {
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB');
+
+  // GridFS route should be inside this block
+  app.get('/uploads/:id', async (req, res) => {
   try {
-    const bucket = new GridFSBucket(mongoose.connection.db, {
-      bucketName: 'uploads',
+    const db = mongoose.connection.db;
+    const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
+    const files = await db.collection('uploads.files').findOne({ _id: fileId });
+
+    if (!files) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    res.set({
+      'Content-Type': files.contentType,
+      'Content-Disposition': `inline; filename="${files.filename}"`,
     });
 
-    const fileStream = bucket.openDownloadStreamByName(req.params.filename);
+    const downloadStream = bucket.openDownloadStream(fileId);
+    downloadStream.pipe(res);
 
-    fileStream.on('error', (err) => {
-      console.error('Error streaming file from GridFS:', err.message);
-      res.status(404).json({ message: 'File not found' });
+    downloadStream.on('error', (err) => {
+      console.error('Error streaming file:', err);
+      res.status(500).json({ message: 'Error streaming file' });
     });
 
-    fileStream.pipe(res);
-  } catch (error) {
-    console.error('Server error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+  } catch (err) {
+    console.error('Error retrieving file:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  // ✅ Now safe to start the server
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 });
-  
+
+app.get('/list-uploaded-files', async (req, res) => {
+  const files = await mongoose.connection.db.collection('uploads.files').find({}).toArray();
+  res.json(files.map(f => f.filename));
+});
