@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import ExcelJS from "exceljs";
 import mime from 'mime-types'; 
+import upload,{ uploadToGridFS } from '../middleware/fileUploadimg.js';
 
 const router = express.Router();
 
@@ -264,14 +265,18 @@ router.post('/:examId/questions', upload.single('photo'), async (req, res) => {
   
       if (req.file) {
         if (question.photo) {
-          const oldPhotoPath = path.join(__dirname, '..', question.photo);
-          fs.unlink(oldPhotoPath, (err) => {
-            if (err) {
-              console.error('Failed to delete old photo:', err.message);
-            }
-          });
+              const filename = `${Date.now()}-${req.file.originalname}`; // New filename for the upload
+             
+        
+              const file = await uploadToGridFS(req.file.buffer, filename, req.file.mimetype);
+              
+              // Step 3: Use the file._id to update the photo path in the database
+              if (file) {
+                photo = `uploads/${file._id.toString()}`; // Store the GridFS file's ID as the photo path
+                console.log("Updated photo path:", photo);
+              }
         }
-  
+
         updateFields["questions.$.photo"] = `uploads/${req.file.filename}`;
       }
   
