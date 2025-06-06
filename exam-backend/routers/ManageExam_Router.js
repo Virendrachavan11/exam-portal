@@ -277,7 +277,7 @@ router.post('/:examId/questions', upload.single('photo'), async (req, res) => {
               }
         }
 
-        updateFields["questions.$.photo"] = `uploads/${req.file.filename}`;
+        updateFields["questions.$.photo"] = photo;
       }
   
 
