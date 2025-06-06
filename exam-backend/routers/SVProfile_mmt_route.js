@@ -46,9 +46,11 @@ router.put('/Update-supervisor/:emailID', upload.single('photo'), async (req, re
     if (req.file) {
 
       photo = req.file.filename;
+      console.log("api running",photo)
 
     }
 
+    console.log("api running 2")
     const updatedsv = await supervisordata.findOneAndUpdate(
       { emailID },
       { $set: { nameofsv, orgName, photo } },
