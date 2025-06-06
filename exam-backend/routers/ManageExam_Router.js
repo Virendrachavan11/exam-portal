@@ -263,6 +263,7 @@ router.post('/:examId/questions', upload.single('photo'), async (req, res) => {
       };
   
       if (req.file) {
+        let photo
         if (question.photo) {
               const filename = `${Date.now()}-${req.file.originalname}`; // New filename for the upload
              
