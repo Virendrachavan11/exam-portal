@@ -15,8 +15,7 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Setup multer to store files in the uploads directory
-import upload from '../middleware/fileUploadimg.js';
+
 
 
 router.get("/:SvUser", async (req, res) => {
