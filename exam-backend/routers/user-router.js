@@ -1,7 +1,7 @@
 import express from 'express';
 import { User,candidatedata,supervisordata} from "../models/examdb.js";
 import jsw from 'jsonwebtoken'
-import upload from '../middleware/fileUploadimg.js';
+
 import { CandAccountCreationMail } from '../middleware/CandEmailService.js';
 import crypto from 'crypto';
 import { ResetPasswordMail } from '../middleware/AuthEmailServices.js';
