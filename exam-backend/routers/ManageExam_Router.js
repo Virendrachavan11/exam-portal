@@ -9,6 +9,7 @@ import ExcelJS from "exceljs";
 import mime from 'mime-types'; 
 import upload,{ uploadToGridFS } from '../middleware/fileUploadimg.js';
 import { GridFSBucket, ObjectId } from 'mongodb';
+import mongoose from "mongoose";
 
 const router = express.Router();
 
