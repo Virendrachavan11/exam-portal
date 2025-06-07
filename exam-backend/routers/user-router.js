@@ -7,6 +7,7 @@ import crypto from 'crypto';
 import { ResetPasswordMail } from '../middleware/AuthEmailServices.js';
 import { SvAccountCreationMail } from '../middleware/SuperAdminEmailService.js';
 import bcrypt from 'bcryptjs';
+import upload,{ uploadToGridFS } from '../middleware/fileUploadimg.js';
 import { GridFSBucket, ObjectId } from 'mongodb';
 import mongoose from "mongoose";
 
