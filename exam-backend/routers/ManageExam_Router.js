@@ -125,7 +125,24 @@ router.post('/:examId/questions', upload.single('photo'), async (req, res) => {
       ans
     } = req.body;
 
-    const photo = req.file ? req.file.path : 'uploads/default.jpg';
+    // const photo = req.file ? req.file.path : 'uploads/default.jpg';
+    let photo;
+
+        if (req.file) {
+          console.log("File received for upload:", req.file);
+    
+    
+          const filename = `${Date.now()}-${req.file.originalname}`; // New filename for the upload
+          console.log(filename)
+
+          const file = await uploadToGridFS(req.file.buffer, filename, req.file.mimetype);
+          
+
+          if (file) {
+            photo = `uploads/${file._id.toString()}`; // Store the GridFS file's ID as the photo path
+            console.log("Updated photo path:", photo);
+          }
+        }
 
     const newQuestion = {
       Question,

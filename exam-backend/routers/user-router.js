@@ -7,6 +7,9 @@ import crypto from 'crypto';
 import { ResetPasswordMail } from '../middleware/AuthEmailServices.js';
 import { SvAccountCreationMail } from '../middleware/SuperAdminEmailService.js';
 import bcrypt from 'bcryptjs';
+import { GridFSBucket, ObjectId } from 'mongodb';
+import mongoose from "mongoose";
+
 
 const router = express.Router()
 
@@ -60,7 +63,25 @@ router.post('/signup', upload.single('photo'), async (req, res) => {
       try {
     
         
-        const photo = req.file ? req.file.path : 'assets/default.png';
+        // const photo = req.file ? req.file.path : 'assets/default.png';
+
+            let photo;
+        
+                if (req.file) {
+                  console.log("File received for upload:", req.file);
+            
+            
+                  const filename = `${Date.now()}-${req.file.originalname}`; // New filename for the upload
+                  console.log(filename)
+        
+                  const file = await uploadToGridFS(req.file.buffer, filename, req.file.mimetype);
+                  
+        
+                  if (file) {
+                    photo = `uploads/${file._id.toString()}`; // Store the GridFS file's ID as the photo path
+                    console.log("Updated photo path:", photo);
+                  }
+                }
 
         // create a Token
         
