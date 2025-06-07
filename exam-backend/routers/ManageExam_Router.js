@@ -265,6 +265,20 @@ router.post('/:examId/questions', upload.single('photo'), async (req, res) => {
       if (req.file) {
         let photo
         if (question.photo) {
+
+                const db = mongoose.connection.db;
+                const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+
+                const oldPhotoId = req.body.oldPhoto?.split('/')[1];
+                if (oldPhotoId && ObjectId.isValid(oldPhotoId)) {
+                  try {
+                    await bucket.delete(new ObjectId(oldPhotoId));
+                    console.log("Old photo deleted:", oldPhotoId);
+                  } catch (err) {
+                    console.warn("Old photo deletion failed:", err.message);
+                  }
+                }
+
               const filename = `${Date.now()}-${req.file.originalname}`; // New filename for the upload
              
         
