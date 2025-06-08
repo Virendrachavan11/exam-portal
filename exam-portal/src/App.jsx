@@ -32,7 +32,7 @@ const App = () => {
   
   const LogedUser= useSelector((state) => state.auth, shallowEqual);
 
-  const PRODUCTION_BACKEND_URL = 'https://exam-portal-backend-hvq6.onrender.com';
+  const PRODUCTION_BACKEND_URL = 'http://localhost:3000';
 
   if (process.env.NODE_ENV === 'production') {
     const originalFetch = window.fetch;
