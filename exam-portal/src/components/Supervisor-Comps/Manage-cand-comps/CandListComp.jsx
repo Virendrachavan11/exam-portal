@@ -107,7 +107,7 @@ const CandListComp = ({ SvUser,candidates,error,loading,handleCandDeleted,handle
             setSelectedCandidate(null)
             
         } else {
-            toast.error(`Error: ${result.message}`);
+            toast.error(`Error: ${data.message}`);
         }
     } catch (error) {
         toast.error(`Error: ${error.message}`);

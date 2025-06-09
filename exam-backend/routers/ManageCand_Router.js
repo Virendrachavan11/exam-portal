@@ -2,11 +2,13 @@ import express from 'express';
 import { candidatedata, User } from '../models/examdb.js';
 import jsw from 'jsonwebtoken'
 import { Console } from 'console';
-import upload from '../middleware/fileUploadimg.js';
 import ExcelJS from "exceljs";
-import XLSXPopulate from 'xlsx-populate';
+
 import mime from 'mime-types'; 
 import { CandAccountCreationMail } from '../middleware/CandEmailService.js';
+import upload,{ uploadToGridFS } from '../middleware/fileUploadimg.js';
+import { GridFSBucket, ObjectId } from 'mongodb';
+import mongoose from "mongoose";
 
 
 import path from 'path';
@@ -60,77 +62,94 @@ router.post("/Upload-Candidate/:createdby", upload.single("file"), async (req, r
       return res.status(400).json({ message: "No file uploaded" });
     }
 
+    // Step 1: Upload Excel file to GridFS
+    const bucket = new GridFSBucket(mongoose.connection.db, { bucketName: 'uploads' });
+    const uploadedExcel = await uploadToGridFS(req.file.buffer, req.file.originalname, req.file.mimetype);
+    const uploadedExcelId = uploadedExcel._id;
+
+    // Step 2: Read Excel from buffer directly
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(req.file.path);
+    await workbook.xlsx.load(req.file.buffer); // direct buffer use
     const worksheet = workbook.getWorksheet(1);
 
     if (!worksheet) {
       return res.status(400).json({ message: "Invalid file format or empty data" });
     }
 
-    const imageDirectory = path.join(__dirname, "../uploads");
-    if (!fs.existsSync(imageDirectory)) {
-      fs.mkdirSync(imageDirectory, { recursive: true });
-    }
-
     const imageMap = {};
 
+    // Step 3: Upload embedded images (if any) to GridFS
     workbook.eachSheet((ws) => {
       ws.getImages().forEach((image) => {
         const img = workbook.model.media.find((m) => m.index === image.imageId);
         if (img) {
-          const imageExt = mime.extension(img.contentType) || "png";
-          const imageName = `candidate_${Date.now()}_${image.imageId}.${imageExt}`;
-          const imagePath = path.join(imageDirectory, imageName);
-          fs.writeFileSync(imagePath, img.buffer);
-          imageMap[image.range.tl.nativeRow + 1] = `uploads/${imageName}`;
+          const ext = mime.extension(img.contentType) || 'png';
+          const filename = `candidate_${Date.now()}_${image.imageId}.${ext}`;
+          const rowNum = image.range.tl.nativeRow + 1;
+
+          imageMap[rowNum] = uploadToGridFS(img.buffer, filename, img.contentType)
+            .then(file => `uploads/${file._id.toString()}`)
+            .catch(err => {
+              console.error("Image upload failed:", err.message);
+              return null;
+            });
         }
       });
     });
 
-    const candidatePromises = worksheet
-      .getRows(2, worksheet.rowCount - 1)
-      .map(async (row, rowIndex) => {
-        const nameofCand = row.getCell(1).value;
-        const rollNo = Number(row.getCell(2).value);
-        const emailCellValue = row.getCell(3).value;
-        const emailID = typeof emailCellValue === "object" ? emailCellValue.text : emailCellValue;
+    // Resolve image uploads
+    const resolvedImageMap = {};
+    for (const row in imageMap) {
+      resolvedImageMap[row] = await imageMap[row];
+    }
 
-        if (!Number.isInteger(rollNo)) return null;
+    // Step 4: Process and create candidates
+    const candidatePromises = worksheet.getRows(2, worksheet.rowCount - 1).map(async (row, rowIndex) => {
+      const nameofCand = row.getCell(1).value;
+      const rollNo = Number(row.getCell(2).value);
+      const emailCellValue = row.getCell(3).value;
+      const emailID = typeof emailCellValue === "object" ? emailCellValue.text : emailCellValue;
 
-        let photoPath = imageMap[rowIndex + 2] || defaultImagePath;
+      if (!Number.isInteger(rollNo)) return null;
 
-        const User_details = {
-          emailID,
-          nameofCand,
-          rollNo,
-          createdby,
-          photo: photoPath,
-        };
+      const photoPath = resolvedImageMap[rowIndex + 2] || 'uploads/default.png';
 
-        const psw = generatePassword();
-        const User_cred = {
-          emailID,
-          Password: psw,
-          userType: "Candidate",
-        };
+      const User_details = {
+        emailID,
+        nameofCand,
+        rollNo,
+        createdby,
+        photo: photoPath,
+      };
 
-        await candidatedata.create(User_details);
-        const user = await User.signup(User_cred.emailID, User_cred.Password, User_cred.userType);
+      const psw = generatePassword();
+      const User_cred = {
+        emailID,
+        Password: psw,
+        userType: "Candidate",
+      };
 
-        try {
-          await CandAccountCreationMail(User_cred.emailID, nameofCand, User_cred.Password);
-        } catch (error) {
-          console.error(`Failed to send email to ${User_cred.emailID}:`, error.message);
-        }
+      await candidatedata.create(User_details);
+      const user = await User.signup(User_cred.emailID, User_cred.Password, User_cred.userType);
 
-        return createToken(user._id);
-      });
+      try {
+        await CandAccountCreationMail(User_cred.emailID, nameofCand, User_cred.Password);
+      } catch (error) {
+        console.error(`Failed to send email to ${User_cred.emailID}:`, error.message);
+      }
+
+      return createToken(user._id);
+    });
 
     const tokens = (await Promise.all(candidatePromises)).filter(Boolean);
 
-    fs.unlink(req.file.path, (err) => {
-      if (err) console.error("Error deleting uploaded file:", err.message);
+    // Step 5: Delete Excel file from GridFS
+    bucket.delete(uploadedExcelId, (err) => {
+      if (err) {
+        console.error("Error deleting Excel file from GridFS:", err.message);
+      } else {
+        console.log("Excel file deleted from GridFS after processing.");
+      }
     });
 
     res.status(201).json({ message: "Candidates uploaded successfully", tokens });
@@ -157,14 +176,14 @@ router.delete("/Delete-Candidate/:emailID", async (req, res) => {
     }
 
     if (deletedCandidate.photo) {
-      const photoPath = path.join(__dirname, '..', deletedCandidate.photo);
-      fs.unlink(photoPath, (err) => {
-        if (err) {
-          console.error("Error deleting photo:", err.message);
-        } else {
-          console.log("Photo deleted:", deletedCandidate.photo);
-        }
-      });
+       const fileId = deletedCandidate.photo.split('/')[1];
+      try {
+        const bucket = new GridFSBucket(mongoose.connection.db, { bucketName: 'uploads' });
+        await bucket.delete(new mongoose.Types.ObjectId(fileId));
+        console.log(`Deleted GridFS file: ${fileId}`);
+      } catch (err) {
+        console.warn(`Failed to delete GridFS file: ${fileId} - ${err.message}`);
+      }
     }
 
     res.status(200).json({ message: "Candidate, associated user, and photo deleted successfully" });
@@ -182,30 +201,32 @@ router.put('/Update-Candidate/:emailID', upload.single('photo'), async (req, res
     const { nameofCand, rollNo } = req.body;
 
     const existingCandidate = await candidatedata.findOne({ emailID });
-
     if (!existingCandidate) {
       return res.status(404).json({ message: 'Candidate not found' });
     }
 
-    let photo = existingCandidate.photo;
+    let photo = existingCandidate.photo; // default to old photo
 
-    // If a new photo is uploaded, delete the old one
     if (req.file) {
-      const oldPhotoPath = path.join(__dirname, '..', photo);
-      
-      // Delete old photo only if it exists and is not a default image
-      if (fs.existsSync(oldPhotoPath) && !photo.includes("default")) {
-        fs.unlink(oldPhotoPath, (err) => {
-          if (err) {
-            console.error("Failed to delete old photo:", err.message);
-          } else {
-            console.log("Old photo deleted:", photo);
-          }
-        });
+      const db = mongoose.connection.db;
+      const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+
+      const oldPhotoId = existingCandidate.photo?.split('/')[1];
+      if (oldPhotoId && ObjectId.isValid(oldPhotoId)) {
+        try {
+          await bucket.delete(new ObjectId(oldPhotoId));
+          console.log("Old photo deleted:", oldPhotoId);
+        } catch (err) {
+          console.warn("Old photo deletion failed:", err.message);
+        }
       }
 
-      // Set new photo path
-      photo = req.file.path;
+      const filename = `${Date.now()}-${req.file.originalname}`;
+      const file = await uploadToGridFS(req.file.buffer, filename, req.file.mimetype);
+      if (file && file._id) {
+        photo = `uploads/${file._id.toString()}`;
+        console.log("New photo uploaded:", photo);
+      }
     }
 
     const updatedCandidate = await candidatedata.findOneAndUpdate(
@@ -215,7 +236,9 @@ router.put('/Update-Candidate/:emailID', upload.single('photo'), async (req, res
     );
 
     res.json({ message: 'Candidate updated successfully', updatedCandidate });
+
   } catch (error) {
+    console.error("Update Candidate Error:", error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
