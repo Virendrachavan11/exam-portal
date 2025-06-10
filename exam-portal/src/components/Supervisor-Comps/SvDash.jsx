@@ -62,7 +62,7 @@ const SvDash = ({LogedUser}) => {
     adminSide.style.display = "block";
     adminSide.style.position = "fixed";
     // hamIcon.style.display = "none";
-    sideBack.style.zIndex = 10;
+    sideBack.style.zIndex = 40;
     sideBack.style.height = "100vh";
   };
 
@@ -136,7 +136,7 @@ const SvDash = ({LogedUser}) => {
 
   <div ref={divRef1} className='fixed top-0 left-0 z-20 w-full h-full flex-col items-center justify-center hidden'>
 
-  <div className='w-3/6 h-3/6 bg-white rounded-md max-lg:w-full z-auto'>
+  <div className='w-3/6 h-3/6 bg-white rounded-md max-lg:w-full z-50'>
 
     <div className='w-full h-1/6 flex justify-between p-2 font-bold text-2xl'>
       <div className="flex items-center justify-center">
