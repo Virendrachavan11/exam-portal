@@ -94,7 +94,7 @@ const ExamHome = ({LogedUser}) => {
         <div className="h-20  w-96 p-1 rounded-lg bg-white shadow-md flex items-center gap-4 max-[600px]:w-full max-[600px]:h-14">
           {/* Candidate Photo */}
           <img 
-            src={`http://localhost:3000/${CandInfo.photo}`} 
+            src={`https://exam-portal-backend-hvq6.onrender.com/${CandInfo.photo}`} 
             alt="Candidate" 
             className="h-full aspect-square rounded-md object-cover bg-orange-300 max-[600px]:h-12 " 
           />
