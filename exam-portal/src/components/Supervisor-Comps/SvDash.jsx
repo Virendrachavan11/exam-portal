@@ -136,20 +136,20 @@ const SvDash = ({LogedUser}) => {
 
   <div ref={divRef1} className='fixed top-0 left-0 z-20 w-full h-full flex-col items-center justify-center hidden'>
 
-  <div className='w-3/6 h-3/6 bg-white rounded-md max-xl:w-4/5 max-xl:h-4/6  max-lg:w-full z-50'>
+  <div className='w-3/6 h-3/6 bg-white rounded-md max-xl:w-4/5 max-xl:h-4/6 max-lg:h-5/6 max-lg:w-full z-50'>
 
-    <div className='w-full h-1/6 flex justify-between p-2 font-bold text-2xl max-lg:text-lg'>
+    <div className='w-full h-1/6 flex justify-between p-2 font-bold text-2xl  max-lg:text-lg'>
       <div className="flex items-center justify-center">
       {/* <Info color="#ffa500" size={30}  /> */}
       <h1 className="ml-1">Supervisor Information</h1>
       </div>
       <X onClick={handleUserPop} />
     </div>
-    <div className="h-5/6 w-full flex p-3">
+    <div className="h-5/6 w-full flex max-lg:flex-col p-3">
    
         <img src={`http://localhost:3000/${LogedUser.photo}`} alt="" className="object-cover h-full aspect-square mr-3 rounded-md
-          max-sm:h-1/2"/>
-        <table className="h-full w-2/3 max-lg:text-xs max-sm:w-4/5">
+          max-lg:h-1/2 "/>
+        <table className="h-full w-2/3 max-lg:text-xs max-sm:w-full max-lg:h-1/2 ">
           <tbody>
             <tr>
             <td className="w-[10%]"><UserRound color="#ffa500" /></td>
