@@ -136,9 +136,9 @@ const SvDash = ({LogedUser}) => {
 
   <div ref={divRef1} className='fixed top-0 left-0 z-20 w-full h-full flex-col items-center justify-center hidden'>
 
-  <div className='w-3/6 h-3/6 bg-white rounded-md max-lg:w-full z-50'>
+  <div className='w-3/6 h-3/6 bg-white rounded-md max-xl:w-4/5 max-xl:h-4/6  max-lg:w-full z-50'>
 
-    <div className='w-full h-1/6 flex justify-between p-2 font-bold text-2xl'>
+    <div className='w-full h-1/6 flex justify-between p-2 font-bold text-2xl max-lg:text-lg'>
       <div className="flex items-center justify-center">
       {/* <Info color="#ffa500" size={30}  /> */}
       <h1 className="ml-1">Supervisor Information</h1>
@@ -148,7 +148,7 @@ const SvDash = ({LogedUser}) => {
     <div className="h-5/6 w-full flex p-3">
    
         <img src={`http://localhost:3000/${LogedUser.photo}`} alt="" className="object-cover h-full aspect-square mr-3 rounded-md"/>
-        <table className="h-full w-2/3">
+        <table className="h-full w-2/3 max-lg:text-xs">
           <tbody>
             <tr>
             <td className="w-[10%]"><UserRound color="#ffa500" /></td>
