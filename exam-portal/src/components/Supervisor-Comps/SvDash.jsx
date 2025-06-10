@@ -147,8 +147,9 @@ const SvDash = ({LogedUser}) => {
     </div>
     <div className="h-5/6 w-full flex p-3">
    
-        <img src={`http://localhost:3000/${LogedUser.photo}`} alt="" className="object-cover h-full aspect-square mr-3 rounded-md"/>
-        <table className="h-full w-2/3 max-lg:text-xs">
+        <img src={`http://localhost:3000/${LogedUser.photo}`} alt="" className="object-cover h-full aspect-square mr-3 rounded-md
+          max-sm:h-1/2"/>
+        <table className="h-full w-2/3 max-lg:text-xs max-sm:w-4/5">
           <tbody>
             <tr>
             <td className="w-[10%]"><UserRound color="#ffa500" /></td>
