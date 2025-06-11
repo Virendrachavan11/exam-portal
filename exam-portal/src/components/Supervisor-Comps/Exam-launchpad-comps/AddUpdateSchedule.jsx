@@ -131,23 +131,24 @@ const AddUpdateSchedule = ({ SvUser, selectedSchedule, handleScheduleUpdated, ha
     }
   };
 
-  const doSubmit = async (data) => {
-    const { CameraStatus, Exam, scheduledTime, scheduleName } = data;
-    const formData = {
-      scheduleName,
-      scheduledTime,
-      Exam,
-      candGroups: selectedGroups,
-    };
+const doSubmit = async (data) => {
+  const { CameraStatus, Exam, scheduledTime, scheduleName } = data;
 
-    console.log(scheduledTime)
+  const isoTime = new Date(scheduledTime).toISOString(); // Convert local datetime to ISO (UTC)
 
-    if (selectedSchedule && selectedSchedule._id) {
-      UpdateSchedule(formData, selectedSchedule._id);
-    } else {
-      AddSchedule(formData);
-    }
+  const formData = {
+    scheduleName,
+    scheduledTime: isoTime, // This is now safely in UTC
+    Exam,
+    candGroups: selectedGroups,
   };
+
+  if (selectedSchedule && selectedSchedule._id) {
+    UpdateSchedule(formData, selectedSchedule._id);
+  } else {
+    AddSchedule(formData);
+  }
+};
 
   return (
     <form
