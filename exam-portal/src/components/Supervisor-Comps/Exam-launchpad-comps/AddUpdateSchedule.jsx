@@ -149,6 +149,8 @@ const AddUpdateSchedule = ({ SvUser, selectedSchedule, handleScheduleUpdated, ha
     candGroups: selectedGroups,
   };
 
+  console.log(formData)
+
   if (selectedSchedule && selectedSchedule._id) {
     UpdateSchedule(formData, selectedSchedule._id);
   } else {
