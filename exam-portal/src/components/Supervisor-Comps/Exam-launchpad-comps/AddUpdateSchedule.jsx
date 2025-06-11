@@ -47,31 +47,24 @@ const AddUpdateSchedule = ({ SvUser, selectedSchedule, handleScheduleUpdated, ha
   }, []);
 
 
-  useEffect(() => {
-    if (selectedSchedule) {
-      setValue("scheduleName", selectedSchedule.scheduleName || "");
-  
-      if (selectedSchedule.scheduledTime) {
-        const formattedDate =new Date(selectedSchedule.scheduledTime).toLocaleString('en-IN', {
-                    timeZone: 'Asia/Kolkata',
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true,
-                  })
-        setValue("scheduledTime", formattedDate);
-      } else {
-        setValue("scheduledTime", "");
-      }
-  
-      setValue("Exam", selectedSchedule.Exam || "");
-      setValue("CameraStatus", selectedSchedule.CameraStatus || "");
+useEffect(() => {
+  if (selectedSchedule) {
+    setValue("scheduleName", selectedSchedule.scheduleName || "");
 
-      
+    if (selectedSchedule.scheduledTime) {
+      const date = new Date(selectedSchedule.scheduledTime);
+      const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16); // format: "YYYY-MM-DDTHH:MM"
+      setValue("scheduledTime", localDateTime);
+    } else {
+      setValue("scheduledTime", "");
     }
-  }, [selectedSchedule, setValue]);
+
+    setValue("Exam", selectedSchedule.Exam || "");
+    setValue("CameraStatus", selectedSchedule.CameraStatus || "");
+  }
+}, [selectedSchedule, setValue]);
 
 
   
