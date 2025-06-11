@@ -187,7 +187,15 @@ const Exam_Display = ({ LogedUser }) => {
         data.TimeLeft = data.examDuration*60;
         data.ScheduleID = ScheduleData._id;
         data.scheduleName =ScheduleData.scheduleName;
-        data.scheduledTime = ScheduleData.scheduledTime;
+        data.scheduledTime = ScheduleData.scheduledTime.toLocaleString("en-IN", {
+                                                        timeZone: 'Asia/Kolkata', // IST
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        hour12: true,
+                                                      });;
         
         setExam(data);
         dispatch(setNewExam(data));
