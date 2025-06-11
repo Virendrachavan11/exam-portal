@@ -37,53 +37,52 @@ const Exam_Display = ({ LogedUser }) => {
   const ScTime = new Date(ScheduleData.scheduledTime)
 
 
-  useEffect(() => {
-  const prevSize = useRef({
+   const prevSize = useRef({
     width: window.innerWidth,
     height: window.innerHeight,
   });
 
-  let resizeTimeout;
+  useEffect(() => {
+    let resizeTimeout;
 
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      setWarningMessage("Tab switch is not allowed during the exam.");
-      setShowWarning(true);
-    }
-  };
-
-  const handleResize = () => {
-    clearTimeout(resizeTimeout);
-
-    resizeTimeout = setTimeout(() => {
-      const currentWidth = window.innerWidth;
-      const currentHeight = window.innerHeight;
-
-      const widthDiff = Math.abs(prevSize.current.width - currentWidth);
-      const heightDiff = Math.abs(prevSize.current.height - currentHeight);
-
-      // Only trigger warning if real significant size change
-      if (widthDiff > 100 || heightDiff > 100) {
-        setWarningMessage("Window resizing is not allowed during the exam.");
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setWarningMessage("Tab switch is not allowed during the exam.");
         setShowWarning(true);
       }
+    };
 
-      prevSize.current = {
-        width: currentWidth,
-        height: currentHeight,
-      };
-    }, 300); // debounce: wait 300ms
-  };
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
 
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-  window.addEventListener("resize", handleResize);
+      resizeTimeout = setTimeout(() => {
+        const currentWidth = window.innerWidth;
+        const currentHeight = window.innerHeight;
 
-  return () => {
-    document.removeEventListener("visibilitychange", handleVisibilityChange);
-    window.removeEventListener("resize", handleResize);
-    clearTimeout(resizeTimeout);
-  };
-}, []);
+        const widthDiff = Math.abs(prevSize.current.width - currentWidth);
+        const heightDiff = Math.abs(prevSize.current.height - currentHeight);
+
+        if (widthDiff > 100 || heightDiff > 100) {
+          setWarningMessage("Window resizing is not allowed during the exam.");
+          setShowWarning(true);
+        }
+
+        prevSize.current = {
+          width: currentWidth,
+          height: currentHeight,
+        };
+      }, 300);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, []);
 
 
 
