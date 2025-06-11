@@ -94,8 +94,8 @@ const ExamHome = ({LogedUser}) => {
         <div className="h-20  w-96 p-1 rounded-lg bg-white shadow-md flex items-center gap-4 max-[600px]:w-full max-[600px]:h-14">
           {/* Candidate Photo */}
           <img 
-            src={`https://exam-portal-backend-hvq6.onrender.com/${CandInfo.photo}`} 
-            alt="Candidate" 
+            src={`https://exam-portal-backend-hvq6.onrender.com/${CandInfo.photo}`}
+            alt="" 
             className="h-full aspect-square rounded-md object-cover bg-orange-300 max-[600px]:h-12 " 
           />
 
@@ -104,6 +104,7 @@ const ExamHome = ({LogedUser}) => {
             <h1 className="font-semibold text-gray-800 text-xl truncate mb-2 max-[600px]:mb-0 max-[600px]:text-base">{CandInfo.nameofCand}</h1>
             <p className="text-sm text-gray-600 truncate w-full">{CandInfo.emailID}</p>
           </div>
+
 
           {/* Settings Icon */}
           <Settings 
