@@ -124,7 +124,7 @@ const ExamHome = ({LogedUser}) => {
           type="search"
           placeholder='Search Exam'
           className='search_box w-2/5 h-full bg-[#F5F5F5] p-2'
-          value={searchTerm} 
+          value={searchTerm} // Bind the input to searchTerm state
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
@@ -239,7 +239,7 @@ const ExamHome = ({LogedUser}) => {
     {/* Body */}
     <div className="p-4 flex flex-col md:flex-row ">
       <img
-        src={`https://exam-portal-backend-hvq6.onrender.com/${CandInfo.photo}`}
+        src={`http://localhost:3000/${CandInfo.photo}`}
         alt=""
         className="object-cover w-full md:w-1/3 aspect-square rounded-md mb-4 md:mb-0 md:mr-4 
         max-md:w-36 max-md:self-center"

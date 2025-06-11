@@ -136,7 +136,7 @@ const ScheduleList = ({LogedUser,Schedules,sdlloading,handleScheduleUpdated,hand
               
 
               <div className='w-2/3 h-full'>
-                <h2 className="font-medium truncate max-sm:text-[12px]">{Schedule.scheduleName} <br /> {Schedule.scheduledTime}</h2>
+                <h2 className="font-medium truncate max-sm:text-[12px]">{Schedule.scheduleName}</h2>
                 <p className="text-sm text-gray-600 max-sm:text-[12px]">
                   {new Date(Schedule.scheduledTime).toLocaleString('en-IN', {
                     timeZone: 'Asia/Kolkata',
