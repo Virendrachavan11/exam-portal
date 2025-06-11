@@ -52,9 +52,15 @@ const AddUpdateSchedule = ({ SvUser, selectedSchedule, handleScheduleUpdated, ha
       setValue("scheduleName", selectedSchedule.scheduleName || "");
   
       if (selectedSchedule.scheduledTime) {
-        const formattedDate = new Date(selectedSchedule.scheduledTime)
-          .toISOString()
-          .slice(0, 16); // Ensure correct format
+        const formattedDate =new Date(selectedSchedule.scheduledTime).toLocaleString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                  })
         setValue("scheduledTime", formattedDate);
       } else {
         setValue("scheduledTime", "");
