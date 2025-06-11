@@ -132,32 +132,22 @@ const AddUpdateSchedule = ({ SvUser, selectedSchedule, handleScheduleUpdated, ha
   };
 
   const doSubmit = async (data) => {
-  const { CameraStatus, Exam, scheduledTime, scheduleName } = data;
+    const { CameraStatus, Exam, scheduledTime, scheduleName } = data;
+    const formData = {
+      scheduleName,
+      scheduledTime,
+      Exam,
+      candGroups: selectedGroups,
+    };
 
+    console.log(scheduledTime)
 
-  const [datePart, timePart] = scheduledTime.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
-
-  const localDate = new Date(year, month - 1, day, hour, minute); // Local time
-  const utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000); // UTC
-
-  const formData = {
-    scheduleName,
-    scheduledTime: utcDate, // 👈 Now it's proper UTC
-    Exam,
-    candGroups: selectedGroups,
+    if (selectedSchedule && selectedSchedule._id) {
+      UpdateSchedule(formData, selectedSchedule._id);
+    } else {
+      AddSchedule(formData);
+    }
   };
-
-  console.log(formData)
-
-  if (selectedSchedule && selectedSchedule._id) {
-    UpdateSchedule(formData, selectedSchedule._id);
-  } else {
-    AddSchedule(formData);
-  }
-};
-
 
   return (
     <form
