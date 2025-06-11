@@ -22,6 +22,8 @@ import CandExamRouter from "./routers/candidateRouters/CandExamRouter.js"
 
 import ManageSv from "./routers/superAdminRoutes/ManageSv_Routers.js"
 
+import convertDatesMiddleware from "./middleware/convertDatesToIST.js";
+
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -41,6 +43,9 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+app.use(convertDatesMiddleware);
+
 app.use(express.static('public'));  
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -48,7 +53,7 @@ app.use(bodyParser.json())
 
 const allowedOrigins = [
   'https://exam-portal-eyn2.onrender.com',
-  'http://localhost:3000'
+  // 'http://localhost:3000'
 ];
 
 app.use(cors({
