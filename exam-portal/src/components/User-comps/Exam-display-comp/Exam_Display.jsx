@@ -28,7 +28,7 @@ const Exam_Display = ({ LogedUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [showWarning, setShowWarning] = useState(false);
-const [warningMessage, setWarningMessage] = useState("");
+  const [warningMessage, setWarningMessage] = useState("");
 
   const ExamData = useSelector((state) => state.examMmt.examinfos) || null;
   const ScheduleData = location.state?.ScheduleData
@@ -38,26 +38,52 @@ const [warningMessage, setWarningMessage] = useState("");
 
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setWarningMessage("Tab switch is not allowed during the exam.");
+  const prevSize = useRef({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  let resizeTimeout;
+
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      setWarningMessage("Tab switch is not allowed during the exam.");
+      setShowWarning(true);
+    }
+  };
+
+  const handleResize = () => {
+    clearTimeout(resizeTimeout);
+
+    resizeTimeout = setTimeout(() => {
+      const currentWidth = window.innerWidth;
+      const currentHeight = window.innerHeight;
+
+      const widthDiff = Math.abs(prevSize.current.width - currentWidth);
+      const heightDiff = Math.abs(prevSize.current.height - currentHeight);
+
+      // Only trigger warning if real significant size change
+      if (widthDiff > 100 || heightDiff > 100) {
+        setWarningMessage("Window resizing is not allowed during the exam.");
         setShowWarning(true);
       }
-    };
-  
-    const handleResize = () => {
-      setWarningMessage("Window resizing is not allowed during the exam.");
-      setShowWarning(true);
-    };
-  
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("resize", handleResize);
-  
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+
+      prevSize.current = {
+        width: currentWidth,
+        height: currentHeight,
+      };
+    }, 300); // debounce: wait 300ms
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("resize", handleResize);
+
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    window.removeEventListener("resize", handleResize);
+    clearTimeout(resizeTimeout);
+  };
+}, []);
 
 
 
