@@ -58,85 +58,94 @@ const ResultList = ({ LogedUser }) => {
 
 
 
-    return (
-        <div className="w-4/5 max-sm:mt-4 max-sm:w-full overflow-hidden max-lg:w-full">
-            <h1 className="font-bold text-4xl mb-4 mt-8 mx-5">All Result List</h1>
+return (
+  <div className="w-4/5 max-sm:w-full max-sm:mt-4 max-lg:w-full overflow-hidden">
+    <h1 className="font-bold text-4xl mb-4 mt-8 mx-5">All Result List</h1>
 
-            <div className="bg-white flex flex-col m-4 rounded-xl p-3 shadow-lg h-1/2">
-                <div className="flex items-center justify-between py-2 mb-9 w-full">
-                    <input
-                        type="search"
-                        placeholder="Search Result"
-                        className="search_box w-3/5 h-[40px]"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+    <div className="bg-white m-4 rounded-xl p-4 shadow-lg">
+      {/* Search Bar */}
+      <div className="flex items-center justify-between mb-6 w-full">
+        <input
+          type="search"
+          placeholder="Search Result"
+          className="search_box w-3/5 h-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <hr className="w-full bg-blue-500 mb-2" />
+
+      {/* Table */}
+      <div className="w-full max-h-[60vh] overflow-auto">
+        <table className="table-auto w-full border border-gray-300 rounded-md overflow-hidden text-sm">
+          <thead className="bg-gray-200 text-left sticky top-0 z-10">
+            <tr className="font-semibold">
+              <th className="p-3 border-b">No.</th>
+              <th className="p-3 border-b">Schedule Name</th>
+              <th className="p-3 border-b">Date and Time</th>
+              <th className="p-3 border-b">Exam Name</th>
+              <th className="p-3 border-b text-center">Delete</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-800">
+            {filteredResultList.length > 0 ? (
+              filteredResultList.map((rs, index) => (
+                <tr
+                  key={rs._id}
+                  className="hover:bg-gray-100 transition duration-200 border-b cursor-pointer max-sm:text-xs"
+                  onClick={() =>
+                    navigate("/sv-dashboard/Result-List/CandList", {
+                      state: { resultData: rs },
+                    })
+                  }
+                >
+                  <td className="p-3">{index + 1}</td>
+                  <td className="p-3 font-medium">{rs.scheduleName}</td>
+                  <td className="p-3">
+                    {new Date(rs.scheduledTime).toLocaleString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </td>
+                  <td className="p-3">{rs.examTitle}</td>
+                  <td
+                    className="p-3 text-center"
+                    title="Delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      HandleResultDelete(rs._id);
+                    }}
+                  >
+                    <Trash2
+                      size={20}
+                      color="#ff0000"
+                      className="mx-auto hover:scale-110 transition"
                     />
-                </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="text-center py-6 text-lg text-orange-600 font-semibold"
+                >
+                  No Exam Found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
 
-                <hr className="w-full bg-blue-500 mb-2" />
-
-                <div className="w-full h-[90%] overflow-auto ">
-                <table className="table-auto w-full border border-gray-300 rounded-md overflow-hidden ">
-                    <thead className="bg-gray-200 text-left">
-                        <tr className="text-sm font-semibold">
-                        <th className="p-3 border-b">No.</th>
-                        <th className="p-3 border-b">Schedule Name</th>
-                        <th className="p-3 border-b">Date and Time</th>
-                        <th className="p-3 border-b">Exam Name</th>
-                        <th className="p-3 border-b text-center">Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-sm text-gray-800">
-                        {filteredResultList.length > 0 ? (
-                        filteredResultList.map((rs, index) => (
-                            <tr
-                            key={rs._id}
-                            className="hover:bg-gray-100 transition duration-200 border-b cursor-pointer max-sm:text-[9px]"
-                            onClick={() =>
-                                navigate(`/sv-dashboard/Result-List/CandList`, {
-                                state: { resultData: rs },
-                                })
-                            }
-                            >
-                            <td className="p-3">{index + 1}</td>
-                            <td className="p-3 font-medium">{rs.scheduleName}</td>
-                            <td className="p-3">
-                                {new Date(rs.scheduledTime).toLocaleString('en-US', {
-                                month: 'long',
-                                day: 'numeric',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true,
-                                })}
-                            </td>
-                            <td className="p-3">{rs.examTitle}</td>
-                            <td
-                                className="p-3 text-center"
-                                title="Delete"
-                                onClick={(e) => {
-                                e.stopPropagation();
-                                HandleResultDelete(rs._id);
-                                }}
-                            >
-                                <Trash2 size={24} color="#ff0000" className="mx-auto hover:scale-110 transition" />
-                            </td>
-                            </tr>
-                        ))
-                        ) : (
-                        <tr>
-                            <td colSpan={5} className="text-center py-6 text-lg text-orange-600 font-semibold">
-                            No Exam Found
-                            </td>
-                        </tr>
-                        )}
-                    </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
-    );
 };
 
 export default ResultList;
