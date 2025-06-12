@@ -53,7 +53,7 @@ const UpdateExamInfo = ({ examId, exam, refreshExam }) => {
     <form
       onSubmit={handleSubmit(updateExam)}
       className="bg-white w-full h-full grid grid-cols-4 grid-rows-5 gap-3 shadow-md rounded-xl row-start-2 row-end-6 col-start-1 col-end-6 p-3
-                 max-lg:col-start-1 max-lg:col-end-9 max-lg:row-end-5 -z-20"
+                 max-lg:col-start-1 max-lg:col-end-9 max-lg:row-end-5 "
     >
   
 
