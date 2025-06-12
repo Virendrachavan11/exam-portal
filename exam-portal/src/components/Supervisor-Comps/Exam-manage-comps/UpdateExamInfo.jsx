@@ -21,7 +21,7 @@ const UpdateExamInfo = ({ examId, exam, refreshExam }) => {
         examlang: exam.examlang || "",
       }, { keepDirtyValues: true }); // Keeps user inputs even if state updates
     }
-  }, [exam]);
+  }, [exam,setValue]);
 
 
   // Handle form submission
