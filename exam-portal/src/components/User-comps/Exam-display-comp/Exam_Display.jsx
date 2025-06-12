@@ -37,95 +37,84 @@ const Exam_Display = ({ LogedUser }) => {
   const ScTime = new Date(ScheduleData.scheduledTime)
 
 
-   const prevSize = useRef({
+useEffect(() => {
+  const resizeTimeoutRef = { current: null };
+  const prevSize = {
     width: window.innerWidth,
     height: window.innerHeight,
-  });
+  };
 
-  useEffect(() => {
-    let resizeTimeout;
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      setWarningMessage("Tab switch is not allowed during the exam.");
+      setShowWarning(true);
+    }
+  };
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setWarningMessage("Tab switch is not allowed during the exam.");
+  const handleResize = () => {
+    clearTimeout(resizeTimeoutRef.current);
+
+    resizeTimeoutRef.current = setTimeout(() => {
+      const currentWidth = window.innerWidth;
+      const currentHeight = window.innerHeight;
+
+      const widthDiff = Math.abs(prevSize.width - currentWidth);
+      const heightDiff = Math.abs(prevSize.height - currentHeight);
+
+      if (widthDiff > 100 || heightDiff > 100) {
+        setWarningMessage("Window resizing is not allowed during the exam.");
         setShowWarning(true);
       }
-    };
 
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
+      prevSize.width = currentWidth;
+      prevSize.height = currentHeight;
+    }, 300);
+  };
 
-      resizeTimeout = setTimeout(() => {
-        const currentWidth = window.innerWidth;
-        const currentHeight = window.innerHeight;
-
-        const widthDiff = Math.abs(prevSize.current.width - currentWidth);
-        const heightDiff = Math.abs(prevSize.current.height - currentHeight);
-
-        if (widthDiff > 100 || heightDiff > 100) {
-          setWarningMessage("Window resizing is not allowed during the exam.");
-          setShowWarning(true);
-        }
-
-        prevSize.current = {
-          width: currentWidth,
-          height: currentHeight,
-        };
-      }, 300);
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(resizeTimeout);
-    };
-  }, []);
-
-
-
-  useEffect(() => {
-    const handleContextMenu = (e) => {
-      e.preventDefault(); // Disable right-click
-    };
-  
-    const handleKeyDown = (e) => {
-      // Block F12, Ctrl+Shift+I, Ctrl+Shift+C, Ctrl+Shift+J, Ctrl+U
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key.toUpperCase())) ||
-        (e.ctrlKey && e.key.toLowerCase() === "u")
-      ) {
-        e.preventDefault();
-      }
-    };
-  
-    const handleCopy = (e) => {
-      e.preventDefault(); // Prevent copying
-      setWarningMessage("Copying text is not allowed during the exam.");
-      setShowWarning(true);
-    };
-
-
-    const handleBeforeUnload = (e) => {
+  const handleContextMenu = (e) => {
     e.preventDefault();
-    e.returnValue = ''; // Required for modern browsers to show the confirmation dialog
-    };
-  
-    document.addEventListener("contextmenu", handleContextMenu);
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("copy", handleCopy);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-  
-    return () => {
-      document.removeEventListener("contextmenu", handleContextMenu);
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("copy", handleCopy);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  };
+
+  const handleKeyDown = (e) => {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key.toUpperCase())) ||
+      (e.ctrlKey && e.key.toLowerCase() === "u")
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  const handleCopy = (e) => {
+    e.preventDefault();
+    setWarningMessage("Copying text is not allowed during the exam.");
+    setShowWarning(true);
+  };
+
+  const handleBeforeUnload = (e) => {
+    e.preventDefault();
+    e.returnValue = ""; // This is required to trigger the confirmation dialog in most browsers
+  };
+
+  // Add event listeners
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("resize", handleResize);
+  document.addEventListener("contextmenu", handleContextMenu);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("copy", handleCopy);
+  window.addEventListener("beforeunload", handleBeforeUnload);
+
+  // Cleanup on unmount
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    window.removeEventListener("resize", handleResize);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("copy", handleCopy);
+    window.removeEventListener("beforeunload", handleBeforeUnload);
+    clearTimeout(resizeTimeoutRef.current);
+  };
+}, []);
 
   
 
