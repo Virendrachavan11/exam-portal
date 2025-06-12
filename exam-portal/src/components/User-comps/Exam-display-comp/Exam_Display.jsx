@@ -107,15 +107,23 @@ const Exam_Display = ({ LogedUser }) => {
       setWarningMessage("Copying text is not allowed during the exam.");
       setShowWarning(true);
     };
+
+
+    const handleBeforeUnload = (e) => {
+    e.preventDefault();
+    e.returnValue = ''; // Required for modern browsers to show the confirmation dialog
+    };
   
     document.addEventListener("contextmenu", handleContextMenu);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("copy", handleCopy);
+    window.addEventListener("beforeunload", handleBeforeUnload);
   
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu);
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("copy", handleCopy);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
