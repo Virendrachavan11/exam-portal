@@ -335,23 +335,29 @@ useEffect(() => {
 
 
     
-      {!isRunningTime && (
-        <div className="z-30 fixed bg-gray-100 h-full w-full flex">
-          <div className="h-full w-1/3 flex items-center justify-center">
+     {!isRunningTime && (
+        <div className="z-30 fixed bg-gray-100 inset-0 flex flex-col md:flex-row overflow-auto">
+          
+          {/* Left Image Section */}
+          <div className="w-full md:w-1/3 flex items-center justify-center p-6 bg-white">
             <img
               src={Software_logo}
               alt="PI Exam Logo"
-              className="aspect-square h-1/2 bg-white p-5 rounded-md"
+              className="aspect-square max-h-60 md:max-h-80 bg-white p-4 rounded-md"
             />
           </div>
 
-          <div className="h-full w-2/3 flex flex-col justify-center">
-            <h1 className="text-3xl font-bold text-orange-500 py-7">Instructions for the Exam</h1>
-            <ol className="list-decimal pl-5 space-y-5 flex-col justify-between">
+          {/* Right Instruction Section */}
+          <div className="w-full md:w-2/3 flex flex-col justify-center px-4 py-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-orange-500 py-4 text-center md:text-left">
+              Instructions for the Exam
+            </h1>
+
+            <ol className="list-decimal pl-5 space-y-4 text-sm md:text-base">
               <li>
-                  On the side of the exam display, you will see a collection of circles representing the
+                On the side of the exam display, you will see a collection of circles representing the
                 exam questions:
-                <ul className="list-disc pl-5">
+                <ul className="list-disc pl-5 space-y-1">
                   <li>
                     <span className="font-semibold">White circle:</span> Represents the current question.
                   </li>
@@ -381,17 +387,18 @@ useEffect(() => {
               </li>
             </ol>
 
-            <div className="flex flex-col items-center justify-center py-5">
-              <p className="font-semibold">Your Exam Starts In</p>
+            {/* Start Exam Button */}
+            <div className="flex flex-col items-center justify-center py-6">
+              <p className="font-semibold mb-2 text-center">Your Exam Starts In</p>
               <button
-                className="bg-orange-500 text-white text-xl w-1/3 p-3 rounded-md cursor-pointer"
+                className="bg-orange-500 hover:bg-orange-600 transition-colors duration-200 text-white text-lg md:text-xl w-full md:w-1/2 p-3 rounded-md"
                 onClick={() => {
                   if (examStarted) {
                     dispatch(startTimer());
                     setQuestions(Exam.questions);
                   }
                 }}
-                disabled={!examStarted} // Disables button until exam starts
+                disabled={!examStarted}
               >
                 {examStarted ? "Click Here To Start Exam" : CountDowntime}
               </button>
@@ -399,6 +406,7 @@ useEffect(() => {
           </div>
         </div>
       )}
+
 
 
   {showWarning && (

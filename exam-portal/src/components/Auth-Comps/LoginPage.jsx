@@ -10,38 +10,40 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const SendLogData = async (data) => {
-    
-
-    try {
-      const response = await fetch("http://localhost:3000/user/login", {
+    const SendLogData = async (data) => {
+    toast.promise(
+      fetch("http://localhost:3000/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      });
+      }).then(async (response) => {
+        const result = await response.json();
 
-      const result = await response.json();
-      
+        if (!response.ok) {
+          throw new Error(result.message || "Login failed");
+        }
 
-      if (!response.ok) throw new Error(result.message);
+        dispatch(login(result));
 
-      dispatch(login(result));
+        // Redirect based on user type
+        if (result.userType === "Supervisor") {
+          navigate("/sv-dashboard/manage-exam");
+        } else if (result.userType === "Admin") {
+          navigate("/admin-panel");
+        } else {
+          navigate("/exam");
+        }
 
-      if (result.userType == "Supervisor")
+        return result.userType; // used in success message
+      }),
       {
-        navigate("/sv-dashboard/manage-exam")
+        loading: "Logging in...",
+        success: (role) => `Login successful! Welcome, ${role}`,
+        error: (err) => `${err.message}`,
       }
-      else if(result.userType == "Admin"){
-        navigate("/admin-panel")
-      }
-      else{
-        navigate("/exam")
-      }
-    } catch (error) {
-      toast.error(error.message); 
-    }
+    );
   };
 
   return (
