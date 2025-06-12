@@ -3,28 +3,28 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 const UpdateExamInfo = ({ examId, exam, refreshExam }) => {
-  const {
+
+
+    const {
     register,
     handleSubmit,
-    reset,
+    setValue,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
     if (exam) {
-      reset({
-        examTitle: exam.examTitle || "",
-        examType: exam.examType || "",
-        examDesc: exam.examDesc || "",
-        examDuration: exam.examDuration || "",
-        MarkPerQue: exam.MarkPerQue || "",
-        examlang: exam.examlang || "",
-      }, { keepDirtyValues: true }); // Keeps user inputs even if state updates
+      setValue("examTitle", exam.examTitle || "");
+      setValue("examType", exam.examType || "");
+      setValue("examDesc", exam.examDesc || "");
+      setValue("examDuration", exam.examDuration || "");
+      setValue("MarkPerQue", exam.MarkPerQue || "");
+      setValue("examlang", exam.examlang || "");
     }
-  }, [exam,setValue]);
+  }, [exam, setValue]);
 
 
-  // Handle form submission
+ 
   const updateExam = async (data) => {
     try {
       const response = await fetch(`http://localhost:3000/Manage-exam/update/${examId}`, {
