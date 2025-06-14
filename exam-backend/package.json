@@ -32,5 +32,13 @@
     "sharp": "^0.33.5",
     "validator": "^13.12.0",
     "xlsx-populate": "^1.21.0"
+  },
+  "overrides": {
+  "mongoose": {
+    "bson": "^5.0.0"
+  },
+  "mongodb": {
+    "bson": "^5.0.0"
   }
+}
 }
