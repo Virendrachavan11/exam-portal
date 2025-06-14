@@ -1,25 +1,25 @@
- const PRODUCTION_BACKEND_URL = 'https://exam-portal-backend-hvq6.onrender.com';
+//  const PRODUCTION_BACKEND_URL = 'https://exam-portal-backend-hvq6.onrender.com';
 
-  if (process.env.NODE_ENV === 'production') {
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-      if (typeof args[0] === 'string' && args[0].startsWith('http://localhost:3000')) {
-        args[0] = args[0].replace('http://localhost:3000', PRODUCTION_BACKEND_URL);
-      }
-      return originalFetch(...args);
-    };
+//   if (process.env.NODE_ENV === 'production') {
+//     const originalFetch = window.fetch;
+//     window.fetch = async (...args) => {
+//       if (typeof args[0] === 'string' && args[0].startsWith('http://localhost:3000')) {
+//         args[0] = args[0].replace('http://localhost:3000', PRODUCTION_BACKEND_URL);
+//       }
+//       return originalFetch(...args);
+//     };
 
-    const imageDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
-    Object.defineProperty(HTMLImageElement.prototype, 'src', {
-      set(value) {
-        if (typeof value === 'string' && value.startsWith('http://localhost:3000')) {
-          value = value.replace('http://localhost:3000', PRODUCTION_BACKEND_URL);
-        }
-        imageDescriptor.set.call(this, value);
-      },
-      get: imageDescriptor.get
-    });
-  }
+//     const imageDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+//     Object.defineProperty(HTMLImageElement.prototype, 'src', {
+//       set(value) {
+//         if (typeof value === 'string' && value.startsWith('http://localhost:3000')) {
+//           value = value.replace('http://localhost:3000', PRODUCTION_BACKEND_URL);
+//         }
+//         imageDescriptor.set.call(this, value);
+//       },
+//       get: imageDescriptor.get
+//     });
+//   }
 
 
 
