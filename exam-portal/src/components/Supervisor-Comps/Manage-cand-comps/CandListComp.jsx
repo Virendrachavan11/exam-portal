@@ -18,15 +18,14 @@ const CandListComp = ({ SvUser,candidates,error,loading,handleCandDeleted,handle
 
 
   // Set form values when a candidate is selected
-useEffect(() => {
-  if (!selectedCandidate) return;
-
-  setValue("nameofCand", selectedCandidate.nameofCand || '');
-  setValue("rollNo", selectedCandidate.rollNo || '');
-  setValue("photo", selectedCandidate.photo || '');
-  setValue("emailID", selectedCandidate.emailID || '');
-}, [selectedCandidate, setValue]);
-
+  useEffect(() => {
+    if (selectedCandidate) {
+      setValue("nameofCand", selectedCandidate.nameofCand);
+      setValue("rollNo", selectedCandidate.rollNo);
+      setValue("photo", selectedCandidate.photo);
+      setValue("emailID", selectedCandidate.emailID);
+    }
+  }, [selectedCandidate, setValue]);
 
   // Filter candidates based on the search term
   const filteredCandidates = Array.isArray(candidates)
@@ -38,8 +37,6 @@ useEffect(() => {
 
 
   const HandleCandDelete = async (emailID) => {
-
-      console.log("del",emailID)
 
     const confirmDelete = window.confirm("Are you sure you want to delete this schedule?");
     if (!confirmDelete) return;
@@ -91,8 +88,6 @@ useEffect(() => {
         formData.append("photo", photo[0]);
     }
 
-    console.log(emailID)
-
     try {
         const response = await fetch(`http://localhost:3000/Candidates/Update-Candidate/${emailID}`, {
             method: "PUT",
@@ -112,7 +107,7 @@ useEffect(() => {
             setSelectedCandidate(null)
             
         } else {
-            toast.error(`Error: ${data.message}`);
+            toast.error(`Error: ${result.message}`);
         }
     } catch (error) {
         toast.error(`Error: ${error.message}`);
@@ -168,7 +163,7 @@ useEffect(() => {
 
               <div className='w-1/2 h-full'>
                 <h2 className="font-medium max-[450px]:text-[10px]">{candidate.nameofCand}</h2>
-                <p className="text-sm text-gray-600 max-[450px]:text-[10px]"> {selectedCandidate?.emailID}</p>
+                <p className="text-sm text-gray-600 max-[450px]:text-[10px]">{candidate.emailID}</p>
               </div>
 
               <Trash2 size={30} color={"#ff0000"}
