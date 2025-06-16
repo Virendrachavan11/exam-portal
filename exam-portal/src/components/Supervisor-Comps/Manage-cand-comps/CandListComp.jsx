@@ -88,6 +88,8 @@ const CandListComp = ({ SvUser,candidates,error,loading,handleCandDeleted,handle
         formData.append("photo", photo[0]);
     }
 
+    console.log(formData,emailID)
+
     try {
         const response = await fetch(`http://localhost:3000/Candidates/Update-Candidate/${emailID}`, {
             method: "PUT",
