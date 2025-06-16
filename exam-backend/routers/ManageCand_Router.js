@@ -200,6 +200,8 @@ router.put('/Update-Candidate/:emailID', upload.single('photo'), async (req, res
     const { emailID } = req.params;
     const { nameofCand, rollNo } = req.body;
 
+    console.log(emailID)
+
     const existingCandidate = await candidatedata.findOne({ emailID });
     if (!existingCandidate) {
       return res.status(404).json({ message: 'Candidate not found' });
