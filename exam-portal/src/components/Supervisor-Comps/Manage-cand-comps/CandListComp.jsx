@@ -38,6 +38,8 @@ const CandListComp = ({ SvUser,candidates,error,loading,handleCandDeleted,handle
 
   const HandleCandDelete = async (emailID) => {
 
+      console.log("del",emailID)
+
     const confirmDelete = window.confirm("Are you sure you want to delete this schedule?");
     if (!confirmDelete) return;
     
