@@ -18,14 +18,15 @@ const CandListComp = ({ SvUser,candidates,error,loading,handleCandDeleted,handle
 
 
   // Set form values when a candidate is selected
-  useEffect(() => {
-    if (selectedCandidate) {
-      setValue("nameofCand", selectedCandidate.nameofCand);
-      setValue("rollNo", selectedCandidate.rollNo);
-      setValue("photo", selectedCandidate.photo);
-      setValue("emailID", selectedCandidate.emailID);
-    }
-  }, [selectedCandidate, setValue]);
+useEffect(() => {
+  if (!selectedCandidate) return;
+
+  setValue("nameofCand", selectedCandidate.nameofCand || '');
+  setValue("rollNo", selectedCandidate.rollNo || '');
+  setValue("photo", selectedCandidate.photo || '');
+  setValue("emailID", selectedCandidate.emailID || '');
+}, [selectedCandidate, setValue]);
+
 
   // Filter candidates based on the search term
   const filteredCandidates = Array.isArray(candidates)
@@ -93,7 +94,7 @@ const CandListComp = ({ SvUser,candidates,error,loading,handleCandDeleted,handle
     console.log(emailID)
 
     try {
-        const response = await fetch(`http://localhost:3000/Candidates/Update-Candidate/${emailIDD}`, {
+        const response = await fetch(`http://localhost:3000/Candidates/Update-Candidate/${emailID}`, {
             method: "PUT",
             body: formData,
         });
@@ -167,7 +168,7 @@ const CandListComp = ({ SvUser,candidates,error,loading,handleCandDeleted,handle
 
               <div className='w-1/2 h-full'>
                 <h2 className="font-medium max-[450px]:text-[10px]">{candidate.nameofCand}</h2>
-                <p className="text-sm text-gray-600 max-[450px]:text-[10px]">{candidate.emailID}</p>
+                <p className="text-sm text-gray-600 max-[450px]:text-[10px]"> {selectedCandidate?.emailID}</p>
               </div>
 
               <Trash2 size={30} color={"#ff0000"}
