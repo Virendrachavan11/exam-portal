@@ -149,19 +149,24 @@ router.delete('/Delete-Candidate/:emailID', async (req, res) => {
   const { emailID } = req.params;
 
   try {
+    console.log("Received emailID in route:", emailID);
+
     const deletedUser = await User.findOneAndDelete({ EmailId: emailID });
-    if (!deletedUser) {
-      return res.status(404).json({ message: 'User credentials not found' });
-    }
+    // console.log("Deleted user:", deletedUser);
 
-    console.log("r1",emailID)
-    const deletedCandidate = await candidatedata.findOneAndDelete({ emailID });
-    if (!deletedCandidate) {
-      return res.status(404).json({ message: 'Candidate not found' });
-    }
+    // if (!deletedUser) {
+    //   return res.status(404).json({ message: 'User credentials not found' });
+    // }
 
-    console.log("r2",emailID)
+ 
 
+    // if (!deletedCandidate) {
+    //   return res.status(404).json({ message: 'Candidate not found' });
+    // }
+
+    const deletedCandidate = await candidatedata.findOne({ emailID });
+
+    // Delete image from GridFS if present
     if (deletedCandidate.photo) {
       const parts = deletedCandidate.photo.split('/');
       const fileId = parts[parts.length - 1];
@@ -174,12 +179,11 @@ router.delete('/Delete-Candidate/:emailID', async (req, res) => {
         } catch (err) {
           console.warn(`Failed to delete GridFS file: ${fileId} - ${err.message}`);
         }
-      } else {
-        console.warn(`Invalid fileId: ${fileId}`);
       }
     }
 
-    console.log("r3",emailID)
+    const deleteCandidate = await candidatedata.findOneAndDelete({ emailID });
+    console.log("Deleted candidate:", deletedCandidate);
 
     res.status(200).json({ message: 'Candidate, associated user, and photo deleted successfully' });
   } catch (error) {
@@ -187,6 +191,7 @@ router.delete('/Delete-Candidate/:emailID', async (req, res) => {
     res.status(500).json({ message: 'Error deleting Candidate', error: error.message });
   }
 });
+
 
 router.put('/Update-Candidate/:emailID', upload.single('photo'), async (req, res) => {
   try {

@@ -101,6 +101,7 @@ router.post('/signup', upload.single('photo'), async (req, res) => {
                 const userType = "Candidate";
             
                 const user = await User.signup(EmailId, Password, userType);
+                console.log("User Created")
             
                 const newCandidate = new candidatedata({
                   emailID: EmailId,
@@ -110,6 +111,7 @@ router.post('/signup', upload.single('photo'), async (req, res) => {
                   photo
                 });
                 await newCandidate.save();
+                console.log("User data Created")
             
                 await CandAccountCreationMail(EmailId, nameofCand, Password);
             
