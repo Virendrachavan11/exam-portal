@@ -29,7 +29,7 @@ router.get('/GetScheduleExam/:emailId', async (req, res) => {
       ...schedule,
       status: results.some(result => 
               result.scheduleID === schedule._id.toString() &&
-              result.CandData?.some(cand => cand.emailID === targetEmail)
+              result.CandData?.some(cand => cand.emailID === emailId)
             ) ? "Completed" : "Pending"
     }));
 
