@@ -312,9 +312,9 @@ router.delete('/exam-schedules/delete-schedule/:SvUser/:esID', async (req, res) 
             { new: true } // Return the updated supervisor document
         );
 
-        if (!updatedSupervisor) {
-            return res.status(404).json({ message: "Supervisor or schedule not found" });
-        }
+        // if (!updatedSupervisor) {
+        //     return res.status(404).json({ message: "Supervisor or schedule not found" });
+        // }
 
         res.status(200).json({message: "Schedule deleted successfully!"});
     } catch (error) {
