@@ -27,8 +27,13 @@ router.get('/GetScheduleExam/:emailId', async (req, res) => {
 
     const UpdatedsvSchedules = svSchedule.map(schedule => ({
       ...schedule,
-      status: results.some(result => result.scheduleID === schedule._id.toString()) ? "Completed" : "Pending"
+      status: results.some(result => 
+              result.scheduleID === schedule._id.toString() &&
+              result.CandData?.some(cand => cand.emailID === targetEmail)
+            ) ? "Completed" : "Pending"
     }));
+
+    /// wanted change
 
     const examIds = [...new Set(svSchedule.flatMap(schedule => schedule.Exam))];
     const exams = await Exam.find({ _id: { $in: examIds } }, { examlang: 1, examTitle: 1, duration: 1 });
