@@ -33,7 +33,7 @@ router.get('/GetScheduleExam/:emailId', async (req, res) => {
             ) ? "Completed" : "Pending"
     }));
 
-    /// wanted change
+    
 
     const examIds = [...new Set(svSchedule.flatMap(schedule => schedule.Exam))];
     const exams = await Exam.find({ _id: { $in: examIds } }, { examlang: 1, examTitle: 1, duration: 1 });
